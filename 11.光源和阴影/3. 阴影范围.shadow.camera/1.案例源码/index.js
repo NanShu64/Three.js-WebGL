@@ -1,0 +1,94 @@
+import * as THREE from "three";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+import modelGroup from "./model.js"; //模型对象
+
+//场景
+const scene = new THREE.Scene();
+scene.add(modelGroup.mesh); //模型对象添加到场景中
+scene.add(modelGroup.mesh1); //第二个模型对象添加到场景中
+scene.add(modelGroup.group); //第三个模型对象添加到场景中
+
+//辅助观察的坐标系
+const axesHelper = new THREE.AxesHelper(100);
+scene.add(axesHelper);
+
+//光源设置
+const ambient = new THREE.AmbientLight(0xffffff, 0.4);
+scene.add(ambient);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+// directionalLight.position.set(-50, 100, -50);
+// directionalLight.position.set(100, 60, 50);
+directionalLight.position.set(-100, 60, -50);
+scene.add(directionalLight);
+// 聚光源
+// 1.0：光照强度intensity
+const spotLight = new THREE.SpotLight(0xffffff, 1);
+// 设置聚光光源发散角度
+spotLight.angle = Math.PI / 6; //光锥角度的二分之一
+spotLight.decay = 0.0; //设置光源不随距离衰减
+// 设置聚光光源位置
+spotLight.position.set(0, 50, 0);
+// console.log("聚光源指向目标", spotLight.target);
+// spotLight.target是一个模型对象Object3D，默认在坐标原点
+spotLight.target.position.set(50, 0, 50);
+//spotLight.target添加到场景中.target.position才会起作用
+scene.add(spotLight.target);
+
+// 平行光设置产生阴影的光源对象,开启光源阴影的计算功能
+directionalLight.castShadow = true;
+// 设置三维场景计算阴影的范围
+directionalLight.shadow.camera.left = -50*7;
+directionalLight.shadow.camera.right = 50*5;
+
+directionalLight.shadow.camera.top = 200;
+directionalLight.shadow.camera.bottom = -50;
+directionalLight.shadow.camera.near = 0.5;
+directionalLight.shadow.camera.far = 600;
+
+
+// 查看平行光阴影相机属性
+// console.log("阴影相机属性", directionalLight.shadow.camera);
+
+// scene.add(spotLight); //光源添加到场景中
+// 可视化平行光阴影对应的正投影相机对象
+const cameraHelper = new THREE.CameraHelper(directionalLight.shadow.camera);
+scene.add(cameraHelper);
+
+console.log("shadow.camera位置", directionalLight.shadow.camera.position);
+
+// 聚光源辅助对象，可视化聚光源
+const spotLightHelper = new THREE.SpotLightHelper(spotLight, 0xffffff);
+// scene.add(spotLightHelper);
+
+//相机
+const width = window.innerWidth;
+const height = window.innerHeight;
+const camera = new THREE.PerspectiveCamera(30, width / height, 1, 3000);
+camera.position.set(292, 223, 185);
+camera.lookAt(0, 0, 0);
+
+// WebGL渲染器设置
+const renderer = new THREE.WebGLRenderer({
+  antialias: true, //开启优化锯齿
+});
+renderer.setPixelRatio(window.devicePixelRatio); //防止输出模糊
+renderer.setSize(width, height);
+document.body.appendChild(renderer.domElement);
+// 设置渲染器，允许光源阴影渲染
+renderer.shadowMap.enabled = true;
+// 渲染循环
+function render() {
+  renderer.render(scene, camera);
+  requestAnimationFrame(render);
+}
+render();
+
+const controls = new OrbitControls(camera, renderer.domElement);
+
+// 画布跟随窗口变化
+window.onresize = function () {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+};

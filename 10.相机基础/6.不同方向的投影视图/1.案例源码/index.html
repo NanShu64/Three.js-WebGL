@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Three.js中文网：www.webgl3d.cn</title>
+    <style>
+        body {
+            overflow: hidden;
+            margin: 0px;
+        }
+
+        .bu {
+            background: #393535;
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            color: #ffffff;
+            display: inline-block;
+            background-color: rgb(100, 91, 91);
+            border-radius: 30px;
+        }
+
+        .bu:hover {
+            background-color: rgb(150, 141, 141);
+        }
+
+        .pos {
+            position: absolute;
+            left: 50%;
+            margin-left: -65px;
+            bottom: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="pos">
+        <div id="x"
+            class="bu">x</div>
+        <div id="y"
+            class="bu"
+            style="margin-left: 10px;">y</div>
+        <div id="z"
+            class="bu"
+            style="margin-left: 10px;">z</div>
+    </div>
+    <!-- type="importmap"功能：.html文件中也能和nodejs开发环境中一样方式，引入npm安装的js库 -->
+    <script type="importmap">
+        {
+			"imports": {
+				"three": "../../../three.js/build/three.module.js",
+                "three/addons/": "../../../three.js/examples/jsm/"
+			}
+		}
+	</script>
+    <script src="./index.js"
+        type="module">
+        </script>
+</body>
+
+</html>
