@@ -27,6 +27,8 @@ loader.load("../../工厂.glb", function (gltf) {
 
     tag.scale.set(0.1, 0.1, 1); //适当缩放模型标签
     tag.position.y = (40 / 2) * 0.1; //标签底部箭头和空对象标注点重合：偏移高度像素值一半*缩放比例
+
+    
   }
 });
 
